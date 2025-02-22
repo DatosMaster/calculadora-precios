@@ -13,7 +13,7 @@ factores = {
 
 # Tipo de cambio por país (1 si es USD)
 tipo_cambio = {
-    "Guatemala": 7.8,
+    "Guatemala": 8.03,
     "El Salvador": 1,
     "Honduras": 24.5,
     "Nicaragua": 36.0,
@@ -21,34 +21,27 @@ tipo_cambio = {
     "Panamá": 1,
 }
 
-# Estilos CSS
-st.markdown(
-    """
-    <style>
-        .stButton>button {
-            background-color: #0073e6;
-            color: white;
-            font-size: 16px;
-            border-radius: 10px;
-        }
-        .precio {
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            background-color: #f4f4f4;
-            padding: 10px;
-            border-radius: 10px;
-        }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+# Símbolos de moneda local
+moneda_local = {
+    "Guatemala": "Q",
+    "El Salvador": "USD",
+    "Honduras": "L.",
+    "Nicaragua": "C$",
+    "Costa Rica": "₡",
+    "Panamá": "USD",
+}
+
+# Detectar modo oscuro del sistema
+if "modo_oscuro" not in st.session_state:
+    st.session_state.modo_oscuro = "dark" if st.get_option("theme.base") == "dark" else "light"
 
 st.title("📊 Calculadora de Precios de Venta")
 
-# Modo claro/oscuro
-modo = st.radio("🎨 Modo de pantalla:", ["Claro", "Oscuro"], horizontal=True)
+# Modo claro/oscuro automático con opción de cambio
+modo = st.radio("🎨 Modo de pantalla:", ["Claro", "Oscuro"], index=0 if st.session_state.modo_oscuro == "light" else 1, horizontal=True)
+
 if modo == "Oscuro":
+    st.session_state.modo_oscuro = "dark"
     st.markdown(
         """
         <style>
@@ -58,6 +51,8 @@ if modo == "Oscuro":
         """,
         unsafe_allow_html=True
     )
+else:
+    st.session_state.modo_oscuro = "light"
 
 # Entrada de datos
 pais = st.selectbox("🌍 Selecciona el país:", list(factores.keys()))
@@ -77,14 +72,14 @@ if st.button("🔍 Calcular Precio de Venta"):
         precio_venta = costo_total / (1 - (margen / 100)) + 0.015 * cantidad
 
         # Convertir precio a moneda local
-        if tipo_cambio[pais] == 1:
-            precio_final = f"💰 Precio en {pais}: ${precio_venta:.2f}"
-        else:
-            precio_local = precio_venta * tipo_cambio[pais]
-            precio_final = f"💰 Precio en {pais}: ${precio_venta:.2f} / {precio_local:.2f} {pais}"
+        precio_local = precio_venta * tipo_cambio[pais]
+        simbolo_moneda = moneda_local[pais]
+        precio_final = f"💰 Precio en {pais}: ${precio_venta:.2f}"
+        if tipo_cambio[pais] != 1:
+            precio_final += f" / {simbolo_moneda}{precio_local:.2f}"
 
         # Mostrar precio centrado
-        st.markdown(f'<div class="precio">{precio_final}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="text-align: center; font-size: 24px; font-weight: bold; background-color: #f4f4f4; padding: 10px; border-radius: 10px;">{precio_final}</div>', unsafe_allow_html=True)
 
         # Guardar en historial
         st.session_state.historial.append(precio_final)
@@ -92,14 +87,11 @@ if st.button("🔍 Calcular Precio de Venta"):
         # Mostrar precios en otros países en tabla
         data = []
         for p, f in factores.items():
-            if p != pais:
-                costo_otro = (costo * cantidad) + (costo * f * cantidad) + (costo * 0.01 * cantidad)
-                precio_otro = costo_otro / (1 - (margen / 100)) + 0.015 * cantidad
-                precio_otro_local = precio_otro * tipo_cambio[p]
-                if tipo_cambio[p] == 1:
-                    data.append({"País": p, "Precio de Venta (USD)": f"${precio_otro:.2f}"})
-                else:
-                    data.append({"País": p, "Precio de Venta (USD)": f"${precio_otro:.2f}", "Precio en moneda local": f"{precio_otro_local:.2f} {p}"})
+            costo_otro = (costo * cantidad) + (costo * f * cantidad) + (costo * 0.01 * cantidad)
+            precio_otro = costo_otro / (1 - (margen / 100)) + 0.015 * cantidad
+            precio_otro_local = precio_otro * tipo_cambio[p]
+            simbolo_moneda_otro = moneda_local[p]
+            data.append({"País": p, "Precio de Venta (USD)": f"${precio_otro:.2f}", "Precio en Moneda Local": f"{simbolo_moneda_otro}{precio_otro_local:.2f}"})
 
         df = pd.DataFrame(data)
         st.subheader("🌎 Precios en otros países:")
