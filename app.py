@@ -11,7 +11,7 @@ factores = {
     "Panamá": 0.0432,
 }
 
-# Tipo de cambio por país (1 si es USD)
+# Tipo de cambio por país (actualizable manualmente)
 tipo_cambio = {
     "Guatemala": 7.8,
     "El Salvador": 1,
@@ -37,6 +37,21 @@ st.markdown(
     <style>
         body { background-color: #333; color: white; }
         .stButton>button { background-color: white; color: black; }
+        .precio-box {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            background-color: #444;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .tabla-precios {
+            background-color: #555;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
     </style>
     """,
     unsafe_allow_html=True
@@ -65,9 +80,9 @@ if st.button("🔍 Calcular Precio de Venta"):
             simbolo_moneda = moneda_local[pais]
             precios[f"Margen {margen}%"] = f"${precio_venta:.2f} / {simbolo_moneda}{precio_local:.2f}" if tipo_cambio[pais] != 1 else f"${precio_venta:.2f}"
 
-        st.subheader("💰 Precios de Venta:")
+        st.subheader("💰 Precios de Venta Calculados:")
         for key, value in precios.items():
-            st.markdown(f'<div style="text-align: center; font-size: 20px; font-weight: bold; background-color: #444; padding: 10px; border-radius: 10px;">{key}: {value}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="precio-box">{key}: {value}</div>', unsafe_allow_html=True)
         
         # Mostrar precios en otros países en tabla
         data = []
@@ -79,5 +94,6 @@ if st.button("🔍 Calcular Precio de Venta"):
             data.append({"País": p, "Precio de Venta (USD)": f"${precio_otro:.2f}", "Precio en Moneda Local": f"{simbolo_moneda_otro} {precio_otro_local:.2f}"})
         
         df = pd.DataFrame(data)
-        st.subheader("🌎 Precios en otros países:")
+        st.subheader("🌎 Precios Mínimos en Otros Países:")
+        st.markdown("<div class='tabla-precios'>Estos precios corresponden al margen mínimo de ganancia calculado.</div>", unsafe_allow_html=True)
         st.table(df)
