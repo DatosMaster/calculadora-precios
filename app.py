@@ -13,11 +13,11 @@ factores = {
 
 # Tipo de cambio por país (actualizable manualmente)
 tipo_cambio = {
-    "Guatemala": 7.8,
+    "Guatemala": 8.03,
     "El Salvador": 1,
-    "Honduras": 24.5,
-    "Nicaragua": 36.0,
-    "Costa Rica": 530,
+    "Honduras": 26,
+    "Nicaragua": 37,
+    "Costa Rica": 525,
     "Panamá": 1,
 }
 
@@ -63,7 +63,7 @@ st.title("📊 Calculadora de Precios de Venta")
 pais = st.selectbox("🌍 Selecciona el país:", list(factores.keys()))
 costo = st.number_input("💰 Ingresa el costo por unidad (USD):", min_value=0.00, format="%.2f")
 
-margen_minimo = st.number_input("📈 Margen mínimo de ganancia (%)", min_value=1, max_value=90, value=30, step=1)
+margen_minimo = st.number_input("📈 Margen mínimo de ganancia (%)", min_value=1, max_value=90, value=10, step=1)
 
 if st.button("🔍 Calcular Precio de Venta"):
     if costo == 0:
