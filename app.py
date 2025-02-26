@@ -70,7 +70,7 @@ if st.button("🔍 Calcular Precio de Venta"):
         st.error("⚠️ No se puede generar el precio sin antes ingresar el costo del producto.")
     else:
         factor = factores[pais]
-        costo_total = costo + (costo * factor) + (costo * 0.01)
+        costo_total = costo + factor
         
         precios = {}
         for incremento in [0, 5, 10]:
