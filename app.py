@@ -1,5 +1,18 @@
 import streamlit as st
 import pandas as pd
+from PIL import Image
+
+# Cargar y redimensionar el logo
+logo_path = "Logo Petroplastic.jpg"
+logo = Image.open(logo_path)
+logo = logo.resize((100, 100))  # Ajuste de tamaño para integrarlo bien en el encabezado
+
+# Encabezado con logo e título
+col1, col2 = st.columns([1, 5])
+with col1:
+    st.image(logo)
+with col2:
+    st.markdown("# Petroplastic")
 
 # Factores por país
 factores = {
@@ -33,11 +46,11 @@ moneda_local = {
 
 # Comisiones por país
 comisiones = {
-    "Guatemala": 1.0150,
-    "El Salvador": 1.015,
-    "Honduras": 1.0175,
-    "Nicaragua": 1.0150,
-    "Costa Rica": 1.0100,
+    "Guatemala": 1.01,
+    "El Salvador": 1.011,
+    "Honduras": 1.0111,
+    "Nicaragua": 1.0123,
+    "Costa Rica": 1.01,
     "Panamá": 1.0125,
 }
 
