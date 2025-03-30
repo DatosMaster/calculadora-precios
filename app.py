@@ -43,7 +43,7 @@ comision_pais = {
 }
 
 # Cargar y mostrar el logo en el encabezado
-logo_path = "Logo Petroplastic.jpg"
+logo_path = r"C:\Users\grupo\OneDrive - GrupoPetrop\Listas de precios\CalculadoraPrecios\Logo Petroplastic.jpg"
 logo = Image.open(logo_path)
 logo = logo.resize((100, 100))
 
