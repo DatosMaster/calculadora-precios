@@ -66,7 +66,7 @@ if st.button("🔍 Calcular Precio de Venta"):
 
         st.subheader("💰 Precios de Venta Calculados:")
         for key, value in precios.items():
-            st.markdown(f"<div class='precio-box'>{key}: {value}</div>", unsafe_allow_html=True)
+            st.write(f"{key}: {value}")
         
         # Mostrar precios en otros países en tabla
         data = []
