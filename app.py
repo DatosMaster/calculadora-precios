@@ -31,31 +31,15 @@ moneda_local = {
     "Panamá": "USD",
 }
 
-# Aplicar modo oscuro por defecto
-st.markdown(
-    """
-    <style>
-        body { background-color: #333; color: white; }
-        .stButton>button { background-color: white; color: black; }
-        .precio-box {
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-            background-color: #444;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-        }
-        .tabla-precios {
-            background-color: #555;
-            padding: 10px;
-            border-radius: 10px;
-            text-align: center;
-        }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+# Comisiones por país
+comisiones = {
+    "Guatemala": 1.01,
+    "El Salvador": 1.011,
+    "Honduras": 1.0111,
+    "Nicaragua": 1.0123,
+    "Costa Rica": 1.01,
+    "Panamá": 1.0125,
+}
 
 st.title("📊 Calculadora de Precios de Venta")
 
@@ -70,30 +54,31 @@ if st.button("🔍 Calcular Precio de Venta"):
         st.error("⚠️ No se puede generar el precio sin antes ingresar el costo del producto.")
     else:
         factor = factores[pais]
-        costo_total = costo + (costo * factor) + (costo * 0.01)
+        comision = comisiones[pais]
+        costo_total = (costo + (costo * factor) + (costo * 0.01)) * comision
         
         precios = {}
         for incremento in [0, 5, 10]:
             margen = margen_minimo + incremento
-            precio_venta = costo_total / (1 - (margen / 100)) + 0.015
+            precio_venta = costo_total / (1 - (margen / 100)) * comision
             precio_local = precio_venta * tipo_cambio[pais]
             simbolo_moneda = moneda_local[pais]
             precios[f"Margen {margen}%"] = f"${precio_venta:.2f} / {simbolo_moneda}{precio_local:.2f}" if tipo_cambio[pais] != 1 else f"${precio_venta:.2f}"
 
         st.subheader("💰 Precios de Venta Calculados:")
         for key, value in precios.items():
-            st.markdown(f'<div class="precio-box">{key}: {value}</div>', unsafe_allow_html=True)
+            st.write(f"**{key}:** {value}")
         
         # Mostrar precios en otros países en tabla
         data = []
         for p, f in factores.items():
-            costo_otro = costo + (costo * f) + (costo * 0.01)
-            precio_otro = costo_otro / (1 - (margen_minimo / 100)) + 0.015
+            comision_otro = comisiones[p]
+            costo_otro = (costo + (costo * f) + (costo * 0.01)) * comision_otro
+            precio_otro = costo_otro / (1 - (margen_minimo / 100)) * comision_otro
             precio_otro_local = precio_otro * tipo_cambio[p]
             simbolo_moneda_otro = moneda_local[p]
             data.append({"País": p, "Precio de Venta (USD)": f"${precio_otro:.2f}", "Precio en Moneda Local": f"{simbolo_moneda_otro} {precio_otro_local:.2f}"})
         
         df = pd.DataFrame(data)
         st.subheader("🌎 Precios Mínimos en Otros Países:")
-        st.markdown("<div class='tabla-precios'>Estos precios corresponden al margen mínimo de ganancia calculado.</div>", unsafe_allow_html=True)
-        st.table(df)
+        st.dataframe(df)
