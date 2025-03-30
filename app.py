@@ -1,13 +1,12 @@
 import streamlit as st  
 import pandas as pd  
 from PIL import Image  
-
-# Ruta actualizada de la imagen en el repositorio  
-logo_path = 'logo_petroplastic.jpg'  # Imagen en minúsculas y sin espacios  
+  
+logo_path = 'logo_petroplastic.jpg'
 
 try:  
     logo = Image.open(logo_path)  
-    logo = logo.resize((100, 100))  # Redimensionar la imagen si es necesario  
+    logo = logo.resize((100, 100))
 except FileNotFoundError:  
     st.error("⚠️ No se pudo cargar el logo. Verifica que la imagen esté en la carpeta correcta.")  
 
@@ -62,7 +61,7 @@ st.title("📊 Calculadora de Precios de Venta")
 
 # Entrada de datos  
 pais = st.selectbox("🌍 Selecciona el país:", list(factores.keys()))  
-costo = st.number_input("💰 Ingresa el costo por unidad (USD):", min_value=0.00, format="%.2f")  
+costo = st.number_input("💰 Ingresa el costo por kilo (USD):", min_value=0.00, format="%.2f")  
 margen_minimo = st.number_input("📈 Margen mínimo de ganancia (%)", min_value=1, max_value=90, value=10, step=1)  
 
 if st.button("🔍 Calcular Precio de Venta"):  
