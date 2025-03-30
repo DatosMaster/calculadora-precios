@@ -2,6 +2,15 @@ import streamlit as st
 import pandas as pd  
 from PIL import Image  
 
+# Ruta actualizada de la imagen en el repositorio  
+logo_path = 'logo_petroplastic.jpg'  # Imagen en minúsculas y sin espacios  
+
+try:  
+    logo = Image.open(logo_path)  
+    logo = logo.resize((100, 100))  # Redimensionar la imagen si es necesario  
+except FileNotFoundError:  
+    st.error("⚠️ No se pudo cargar el logo. Verifica que la imagen esté en la carpeta correcta.")  
+
 # Factores por país  
 factores = {  
     "Guatemala": 0.0622,  
@@ -42,19 +51,10 @@ comision_pais = {
     "Panamá": 1.0125,  
 }  
 
-# Cargar y mostrar el logo en el encabezado  
-logo_path = 'Logo Petroplastic.jpg'  
-
-try:  
-    logo = Image.open(logo_path)  
-    logo = logo.resize((100, 100))  # Redimensionar la imagen si es necesario  
-except FileNotFoundError:  
-    st.error("⚠️ No se pudo cargar el logo. Verifica que la imagen esté en la carpeta correcta.")  
-
 # Diseño del encabezado  
 col1, col2 = st.columns([1, 4])  
 with col1:  
-    st.image(logo)  
+    st.image(logo)  # Mostrar el logo  
 with col2:  
     st.markdown("<h1 style='text-align: left; color: black;'>Petroplastic</h1>", unsafe_allow_html=True)  
 
@@ -97,4 +97,4 @@ if st.button("🔍 Calcular Precio de Venta"):
         
         df = pd.DataFrame(data)  
         st.subheader("🌎 Precios Mínimos en Otros Países:")  
-        st.table(df)  
+        st.table(df)
